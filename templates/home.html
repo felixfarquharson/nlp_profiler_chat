@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="container-fluid">
+    {% if user.is_authenticated %}
+        <p>user: {{ user.username }}</p>
+        {% for day in days %}
+            <a href="{% url "report" day.date.year day.date.month day.date.day %}">{{ day.date }}</a>
+        {% endfor %}
+    {% endif %}
+    </div>
+{% endblock %}

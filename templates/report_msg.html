@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="container-fluid">
+        <h1>Detail for "{{ msg|truncatechars:"50" }}" by {{ user }}</h1>
+        {% for graph in graphs %}
+            <h3>{{ graph.title }}</h3>
+            {{ graph.html|safe }}
+        {% endfor %}
+    </div>
+{% endblock %}

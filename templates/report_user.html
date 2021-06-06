@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load humanize %}
+
+{% block content %}
+    <div class="container-fluid">
+        <h1>Details for {{ user }}</h1>
+        <h2>Individual Messages</h2>
+        <div style="height:300px; overflow: auto">
+            <ul>
+                {% for msg in messages %}
+                    <li><a href="{% url "report_msg" year month day user msg.id %}">{{ msg.time }}: {{ msg.body|truncatechars:"50" }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+        <h2>Tables for {{ user }}'s Chat dd/mm/yyyy {{ day }}/{{ month }}/{{ year }} </h2>
+        {% for graph in graphs %}
+            <h3>{{ graph.title }}</h3>
+            {{ graph.html|safe }}
+        {% endfor %}
+    </div>
+{% endblock %}

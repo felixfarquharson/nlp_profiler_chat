@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="container-fluid">
+        <h1>All Chat</h1>
+        <h2>Individual Users Details</h2>
+
+        <div style="height:300px; overflow: auto">
+            <ul>
+                {% for user in users %}
+                    <li><a href="{% url "report_user" year month day user %}">{{ user }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+        <h2>Averages and Scores Tables for All Chat dd/mm/yyyy {{ day }}/{{ month }}/{{ year }} </h2>
+        {% for graph in graphs %}
+            <h3>{{ graph.title }}</h3>
+            {{ graph.html|safe }}
+        {% endfor %}
+    </div>
+{% endblock %}

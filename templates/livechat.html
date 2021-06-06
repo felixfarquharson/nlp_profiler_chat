@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+
+{% block endhead %}
+<style>
+    body {
+        background-color: cadetblue;
+    }
+    #messageFeed {
+        height: calc(100vh - 200px);
+        overflow-y: scroll;
+        background-color: #fff;
+    }
+    #messageText {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        padding: 0 15px 15px 15px;
+        height: 53px;
+    }
+    #names{
+        display: none;
+        position: absolute;
+        bottom: 53px;
+        z-index: 24000;
+        background-color: lightgray;
+    }
+    #userlistdiv{
+        background-color: #fff;
+        overflow-y: scroll;
+        height: calc(100vh - 200px);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+
+<div class="container-fluid">
+<h1>LiveChat</h1>
+    <div class="row">
+    <main role="main" class="col-md-12">
+
+        <div class="row">
+            <div class="col-10">
+                <ul class="list-unstyled" id="messageFeed">
+                    <li>Loading messages...</li>
+                </ul>
+
+                <div id="names">
+                    <p><b>Type until the whole name is bold then hit enter or hit esc to quit this window.</b></p>
+                    <ul id="nameslist"></ul>
+                </div>
+            </div>
+            <div class="col-2" id="userlistdiv">
+                <ul class="list-unstyled" id="userlist">
+                    <li>Loading online users...</li>
+                </ul>
+            </div>
+        </div>
+        <div class="row">
+        <div class="input-group mb-3" id="messageText">
+            <input type="text" class="form-control" id="messageTextarea">
+            <div class="input-group-append">
+                <button class="btn btn-outline-secondary" type="button" id="send" style="background-color: #fff">Send</button>
+            </div>
+        </div></div>
+    </main>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block endbody %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<script>
+    function isFeedAtBottom() {
+        return ($("#messageFeed")[0].offsetHeight+$("#messageFeed")[0].scrollTop)===$("#messageFeed")[0].scrollHeight;
+    };
+
+    function scrollFeedToBottom() {
+        $("#messageFeed")[0].scrollTop = $("#messageFeed")[0].scrollHeight;
+    };
+
+    setInterval(function(){$.getJSON( "{% url "api lc messages" %}", function( data ) {
+        var feedAtBottom = isFeedAtBottom();
+        $("#messageFeed").empty();
+        $.each( data["messages"], function( i ) {
+            var msg = data["messages"][i];
+            $("#messageFeed").append( "<li><i>" + moment(msg["datetime"]).fromNow() + "</i> <b>" + msg["username"] + "</b> "+ msg['body'] + "</li>");
+            if (msg['user'] === "{{ user.get_username }}"){
+                $("#messageFeed").append( '<li><button class="btn btn-danger btn-sm" id="delete'+msg.id+'">delete</button</li>');
+                $("#delete"+msg.id).click(function(){$.post("{% url "api lc delete" %}", {"del": msg.id})});
+            };
+            if (feedAtBottom) {
+                scrollFeedToBottom();
+            };
+        });
+        $("#userlist").empty();
+        $.each(data["online"], function(no){
+            var person = data["online"][no];
+            $("#userlist").append("<li>" + person + "</li>");
+        });
+
+    })}, 2000);
+    $("#send").click(function(){
+        $.post("{% url "api lc add" %}", {"body": $("#messageTextarea").val()})
+        $("#messageTextarea").val("");
+    });
+    $(document).on('keypress', function(e) {
+        if(e.which == 13) {
+            $.post("{% url "api lc add" %}", {"body": $("#messageTextarea").val()});
+            $("#messageTextarea").val("");
+        };
+    });
+</script>
+{% endblock %}
