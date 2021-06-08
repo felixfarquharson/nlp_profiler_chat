@@ -3,12 +3,31 @@
 {% block content %}
     <div class="container-fluid">
     {% if user.is_authenticated %}
-        <p>user: {{ user.username }}</p>
+        <h1>user: {{ user.username }}</h1>
+        <h2>Reports</h2>
         {% for day in days %}
             <a href="{% url "report" day.date.year day.date.month day.date.day %}">{{ day.date }}</a>
         {% endfor %}
     {% else %}
-        <p>Log in please</p>
+        <h1>Describe.site</h1>
+        <p>Signing up is just a username and password with no email verification. It allows you to see the profiles
+        of the past days and chat in the chatroom.</p>
+        <p>Welcome to Describe.site where we aim to show you what sorts of profiling are freely available for your
+        messages and text. Including:
+            <ul>
+                <li>Sentence and Word Counts</li>
+                <li>Spaces and Whitespace Counts</li>
+                <li>Character Counts</li>
+                <li>Repeats Counts</li>
+                <li>Emojis, Numbers, Punctuation and Dates Counts</li>
+                <li>Duplicates Counts</li>
+                <li>Alpha Numeric and Non Alpha Numeric Counts</li>
+                <li>Stop Words and Nouns Counts</li>
+                <li>English and Non English Counts</li>
+                <li>Sentiment Scores</li>
+                <li>Grammar, Spelling and Ease of Reading Scores</li>
+            </ul>
+        </p>
     {% endif %}
     </div>
 {% endblock %}

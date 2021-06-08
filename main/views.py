@@ -20,6 +20,7 @@ def home(request):
     return render(request, "home.html", {"days": msg_days})
 
 
+@login_required
 def report_msg(request, year, month, day, user, msg_id):
 
     objs = Profile.objects.filter(message_id=msg_id)
@@ -135,6 +136,7 @@ def _graphs(qs, user=None):
     return context
 
 
+@login_required
 def report_user(request, year, month, day, user):
 
     objs = Profile.objects.filter(message__created__year=year, message__created__month=month,
@@ -149,6 +151,7 @@ def report_user(request, year, month, day, user):
     return render(request, "report_user.html", context=context)
 
 
+@login_required
 def report(request, year, month, day):
     objs = Profile.objects.filter(message__created__year=year, message__created__month=month,
                                   message__created__day=day)
