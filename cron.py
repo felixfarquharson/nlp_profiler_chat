@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 from datetime import timedelta
 
 from django.utils import timezone
