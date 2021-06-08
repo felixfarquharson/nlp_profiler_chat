@@ -27,7 +27,6 @@
 {% endblock %}
 
 {% block endbody %}
-    {{ df }}
     <script>
         const jsonForGraph = JSON.parse('{{ df|safe }}');
         const ctx = document.getElementById('wordCountHistogram').getContext('2d');
