@@ -1,5 +1,9 @@
 {% extends "base.html" %}
 
+{% block endhead %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.3.2/dist/chart.min.js"></script>
+{% endblock %}
+
 {% block content %}
     <div class="container-fluid">
         <h1>All Chat</h1>
@@ -13,9 +17,59 @@
             </ul>
         </div>
         <h2>Averages and Scores Tables for All Chat dd/mm/yyyy {{ day }}/{{ month }}/{{ year }} </h2>
-        {% for graph in graphs %}
-            <h3>{{ graph.title }}</h3>
-            {{ graph.html|safe }}
+        {% for table in graphs %}
+            <h3>{{ table.title }}</h3>
+            {{ table.html|safe }}
         {% endfor %}
+        <h2>Graphs</h2>
+        <canvas id="wordCountHistogram" width="600" height="500"></canvas>
     </div>
+{% endblock %}
+
+{% block endbody %}
+    {{ df }}
+    <script>
+        const jsonForGraph = JSON.parse('{{ df|safe }}');
+        const ctx = document.getElementById('wordCountHistogram').getContext('2d');
+
+        var labels=[];
+        var values=[];
+        for (var x in jsonForGraph["id"]){labels.push(x)}
+        for (var x in jsonForGraph["count_words"]){values.push(jsonForGraph["count_words"][x])}
+        const chart = new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: labels,
+            datasets: [{
+              label: 'Word Count',
+              data: values,
+              backgroundColor: 'green',
+            }]
+          },
+          options: {
+            scales: {
+              xAxes: [{
+                display: false,
+                barPercentage: 1.3,
+                ticks: {
+                  max: 3,
+                }
+              }, {
+                display: true,
+                ticks: {
+                  autoSkip: false,
+                  max: 4,
+                }
+              }],
+              yAxes: [{
+                ticks: {
+                  beginAtZero: true
+                }
+              }]
+            },
+
+                responsive: false
+          }
+        });
+    </script>
 {% endblock %}

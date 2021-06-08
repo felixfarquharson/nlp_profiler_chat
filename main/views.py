@@ -68,53 +68,54 @@ def report_msg(request, year, month, day, user, msg_id):
                 "html": df[["grammar_check_score", "spelling_quality_score", "ease_of_reading_score"]]
         .to_html()}]
 
-    context = {"graphs": graphs, "user": user, "msg": objs[0].message.body, "year": year, "month": month, "day": day}
+    context = {"graphs": graphs, "df": df.to_json(), "user": user, "msg": objs[0].message.body, "year": year, "month": month, "day": day}
     return render(request, "report_msg.html", context)
 
 
 def _graphs(qs, user=None):
 
     df = read_frame(qs)
+    dfd = df.describe()
     graphs = []
-    graphs += [{"title": 'Sentence and Word Counts', "html": df.describe()[["sentences_count", "count_words"]]
+    graphs += [{"title": 'Sentence and Word Counts', "html": dfd[["sentences_count", "count_words"]]
         .transpose()[["mean", "min", "max"]].transpose().to_html()}]
 
-    graphs += [{"title": 'Spaces and Whitespace Counts', "html": df.describe()[["spaces_count", "whitespaces_count"]]
+    graphs += [{"title": 'Spaces and Whitespace Counts', "html": dfd[["spaces_count", "whitespaces_count"]]
         .transpose()[["mean", "min", "max"]].transpose().to_html()}]
 
     graphs += [{"title": 'Character Counts',
-                "html": df.describe()[["characters_count", "chars_excl_spaces_count", "chars_excl_whitespaces_count"]]
+                "html": dfd[["characters_count", "chars_excl_spaces_count", "chars_excl_whitespaces_count"]]
                     .transpose()[["mean", "min", "max"]].transpose().to_html()}]
 
-    graphs += [{"title": 'Repeats Counts', "html": df.describe()[["repeated_letters_count", "repeated_digits_count",
+    graphs += [{"title": 'Repeats Counts', "html": dfd[["repeated_letters_count", "repeated_digits_count",
                                                                   "repeated_spaces_count",
                                                                   "repeated_whitespaces_count"]]
         .transpose()[["mean", "min", "max"]].transpose().to_html()}]
 
     graphs += [{"title": 'Emojis, Numbers, Punctuation and Dates Counts',
-                "html": df.describe()[["emoji_count", "whole_numbers_count", "punctuations_count", "dates_count"]]
+                "html": dfd[["emoji_count", "whole_numbers_count", "punctuations_count", "dates_count"]]
                     .transpose()[["mean", "min", "max"]].transpose().to_html()}]
 
-    graphs += [{"title": 'Duplicates Counts', "html": df.describe()[["duplicates_count", "repeated_punctuations_count"]]
+    graphs += [{"title": 'Duplicates Counts', "html": dfd[["duplicates_count", "repeated_punctuations_count"]]
         .transpose()[["mean", "min", "max"]].transpose().to_html()}]
 
     graphs += [{"title": 'Alpha Numeric and Non Alpha Numeric Counts',
-                "html": df.describe()[["alpha_numeric_count", "non_alpha_numeric_count"]]
+                "html": dfd[["alpha_numeric_count", "non_alpha_numeric_count"]]
                     .transpose()[["mean", "min", "max"]].transpose().to_html()}]
 
-    graphs += [{"title": 'Stop Words and Nouns Counts', "html": df.describe()[["stop_words_count", "noun_phase_count"]]
+    graphs += [{"title": 'Stop Words and Nouns Counts', "html": dfd[["stop_words_count", "noun_phase_count"]]
         .transpose()[["mean", "min", "max"]].transpose().to_html()}]
 
     graphs += [{"title": 'English and Non English Counts',
-                "html": df.describe()[["english_characters_count", "non_english_characters_count"]]
+                "html": dfd[["english_characters_count", "non_english_characters_count"]]
                     .transpose()[["mean", "min", "max"]].transpose().to_html()}]
 
-    graphs += [{"title": 'Sentiment Scores', "html": df.describe()[["sentiment_polarity_score",
+    graphs += [{"title": 'Sentiment Scores', "html": dfd[["sentiment_polarity_score",
                                                                     "sentiment_subjectivity_score"]]
         .transpose()[["mean", "min", "max"]].transpose().to_html()}]
 
     graphs += [{"title": 'Grammar, Spelling and Ease of Reading Scores',
-                "html": df.describe()[["grammar_check_score", "spelling_quality_score", "ease_of_reading_score"]]
+                "html": dfd[["grammar_check_score", "spelling_quality_score", "ease_of_reading_score"]]
                     .transpose()[["mean", "min", "max"]].transpose().to_html()}]
 
 
@@ -125,7 +126,8 @@ def _graphs(qs, user=None):
             users += [obj.message.user.username]
         messages += [{"id": obj.message.pk, "time": obj.message.created, "body": obj.message.body}]
 
-    context = {"graphs": graphs, "users": users}
+    context = {"graphs": graphs, "dfd": dfd.to_json(), "df": df.to_json(), "users": users}
+
     if user:
         context["user"] = user
         context["messages"] = messages

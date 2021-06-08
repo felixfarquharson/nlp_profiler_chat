@@ -9,5 +9,6 @@ pip install -U git+https://github.com/neomatrix369/nlp_profiler.git@master
 
 then configure the database if you want.
 
+
 then add the following cron line with crontab -e:
 0 0 * * * /path/to/cron.py
