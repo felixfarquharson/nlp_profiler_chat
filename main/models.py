@@ -18,7 +18,7 @@ class LastSeen(models.Model):
 
 
 class Profile(models.Model):
-    message = models.ForeignKey(Message, on_delete=models.CASCADE)
+    message = models.OneToOneField(Message, on_delete=models.CASCADE)
     sentences_count = models.FloatField()
     characters_count = models.FloatField()
     repeated_letters_count = models.FloatField()

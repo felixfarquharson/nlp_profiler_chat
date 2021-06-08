@@ -1,2 +1,5 @@
 # Project exclude paths
 /venv/
+/main/migrations/
+/db.sqlite3
+/.idea/
