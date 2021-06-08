@@ -160,8 +160,6 @@ def report(request, year, month, day):
 
 def signup(request):
     if request.method == 'POST':
-        if not request.POST["codeword"]:
-            return HttpResponseForbidden()
         form = SignupForm(request.POST)
         if form.is_valid():
             form.save()

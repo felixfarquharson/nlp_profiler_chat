@@ -7,6 +7,8 @@
         {% for day in days %}
             <a href="{% url "report" day.date.year day.date.month day.date.day %}">{{ day.date }}</a>
         {% endfor %}
+    {% else %}
+        <p>Log in please</p>
     {% endif %}
     </div>
 {% endblock %}
