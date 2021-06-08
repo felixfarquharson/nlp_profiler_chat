@@ -11,6 +11,9 @@ class Message(models.Model):
     created = models.DateTimeField(default=timezone.now)
     deleted = models.BooleanField(default=False)
 
+    def __str__(self):
+        return f'"{self.body[:50]}" by {self.user.username}'
+
 
 class LastSeen(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -47,3 +50,5 @@ class Profile(models.Model):
     grammar_check_score = models.FloatField()
     spelling_quality_score = models.FloatField()
     ease_of_reading_score = models.FloatField()
+    def __str__(self):
+        return f'"{self.message.body[:50]}" by {self.message.user.username}'
